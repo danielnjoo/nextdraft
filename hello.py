@@ -21,7 +21,7 @@ def hello():
 			'uid': 'EXAMPLE_CHANNEL_MULTI_ITEM_JSON_TTS_{index}'.format(index=index),
 			'updateDate': now,
 			'titleText': post.h3.get_text(),
-			'mainText': "\n".join([p.get_text() for p in post.find(class_='blurb-content').find_all('p', recursive=False)]) 
+			'mainText': "\n".join([p.get_text() for p in post.find(class_='blurb-content').find_all('p', recursive=False)]), 
 			'redirectUrl': post.h3.a['href']
 		} 
 		for index, post in enumerate(soup(class_="daily-blurb"))
