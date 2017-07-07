@@ -21,7 +21,7 @@ def hello():
 			'updateDate': (now - timedelta(seconds=index)).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
 			'titleText': post.h3.get_text(),
 			'mainText': "The " + headline_order[index] + " headline is: " + post.h3.get_text() + ". The story is: " + "\n".join([p.get_text() for p in post.find(class_='blurb-content').find_all('p', recursive=False)]), 
-			'redirectURL': post.h3.a['href']
+			'redirectionUrl': post.h3.a['href']
 		} 
 		for index, post in enumerate(soup(class_="daily-blurb"))
 	]
