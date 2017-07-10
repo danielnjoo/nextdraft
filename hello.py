@@ -38,9 +38,9 @@ def hello():
 
 	# Write locally in 2 separate files because Skill only reads 5 items per feed
 	with open('news1.json','w') as outfile:
-		json.dump(posts,outfile)
-	with open('news2.json','w') as outfile:
 		json.dump(posts1,outfile)
+	with open('news2.json','w') as outfile:
+		json.dump(posts2,outfile)
 
 	# Post to AWS S3
 	s3_client = boto3.client('s3')
