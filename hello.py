@@ -17,8 +17,8 @@ def hello():
 
 	posts = [
 		{
-			'uid': 'EXAMPLE_CHANNEL_MULTI_ITEM_JSON_TTS_{index}'.format(index=index),
-			'updateDate': (now - timedelta(seconds=index)).strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+			'uid': 'MULTI_ITEM_JSON_TTS_{index}'.format(index=index),
+			'updateDate': (now - timedelta(seconds=index)).strftime("%Y-%m-%dT%H:%M:%S.%fZ"), 	# Skill reads by newest updateDate, so to maintain same order time must be subtracted
 			'titleText': post.h3.get_text(),
 			'mainText': "The " + headline_order[index] + " headline is: " + post.h3.get_text() + ", the story is: " + "\n".join([p.get_text() for p in post.find(class_='blurb-content').find_all('p', recursive=False)]), 
 			'redirectionUrl': post.h3.a['href']
@@ -26,14 +26,22 @@ def hello():
 		for index, post in enumerate(soup(class_="daily-blurb"))
 	]
 
-	posts[0]['mainText']= "On " + now.strftime("%A %d %B %Y") + ", the " + posts[0]['mainText'][4:]
+	# No updates on weekends
+	day = now.strftime("%A")
+	if day == "Saturday" or "Sunday":
+		posts[0]['mainText']= "Since today is a " + day + ", these are the headlines from Friday. " + posts[0]['mainText']
+	else:
+		posts[0]['mainText']= "On " + now.strftime("%A %d %B %Y") + ", the " + posts[0]['mainText'][4:]
 
+	# Write locally
 	with open('news.json','w') as outfile:
 		json.dump(posts,outfile)
 
+	# Post to AWS S3
 	s3_client = boto3.client('s3')
 	s3_client.upload_file('news.json', 'nextdraftjson', 'news-remote.json')
 
+	# For local dev
 	return json.dumps(posts)
 
 
