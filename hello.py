@@ -33,13 +33,19 @@ def hello():
 	else:
 		posts[0]['mainText']= "On " + now.strftime("%A %d %B %Y") + ", the " + posts[0]['mainText'][4:]
 
-	# Write locally
-	with open('news.json','w') as outfile:
+	posts1=posts[0:5]
+	posts2=posts[5:10]
+
+	# Write locally in 2 separate files because Skill only reads 5 items per feed
+	with open('news1.json','w') as outfile:
 		json.dump(posts,outfile)
+	with open('news2.json','w') as outfile:
+		json.dump(posts1,outfile)
 
 	# Post to AWS S3
 	s3_client = boto3.client('s3')
-	s3_client.upload_file('news.json', 'nextdraftjson', 'news-remote.json')
+	s3_client.upload_file('news1.json', 'nextdraftjson', 'news-remote1.json')
+	s3_client.upload_file('news2.json', 'nextdraftjson', 'news-remote2.json')
 
 	# For local dev
 	return json.dumps(posts)
